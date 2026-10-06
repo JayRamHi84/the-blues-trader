@@ -1,0 +1,7 @@
+# NinjaTrader & Visual Studio build outputs
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.log
