@@ -24,9 +24,12 @@ namespace NinjaTrader.NinjaScript
 
     public enum BluesProgressionStyle
     {
-        Hybrid,
-        Blues,
-        Jazz
+        Diatonic,             // C Major / Ionian (Classical daylight, pure clean)
+        Dorian,               // D Dorian (Kind of Blue / Santana / Cool Jazz)
+        Aeolian,              // A Aeolian (Cinematic Drama / Hans Zimmer / Epic Minor)
+        Mixolydian,           // G Mixolydian (Classic Rock / Allman Brothers / Blues Groove)
+        BlackKeysPentatonic,  // F# Pentatonic (Zero-conflict Zen / Ambient / Spa)
+        QuartalHarmony        // Stacked 4ths (McCoy Tyner / Modern Acoustic Jazz / Glassy & Open)
     }
 }
 
@@ -65,216 +68,152 @@ namespace NinjaTrader.NinjaScript.Indicators
         }
 
         // ==========================================================================
-        // 1. BLUES RULE SET: All Dominant / Altered family (Unresolved at extremes)
+        // 1. C DIATONIC (C MAJOR / IONIAN)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Pure Daylight, Classical Clarity, Balanced & Transparent.
+        // PSYCHOLOGY: Middle C is balanced home base. Right-hand moves up the white keys 
+        //             on buying, left-hand slides into the warm piano bass on selling.
+        //             Zero accidentals, zero clashes, crystal clear trend recognition.
         // ==========================================================================
-        private readonly HarmonicStage[] bluesLadder = new HarmonicStage[]
+        private readonly HarmonicStage[] diatonicLadder = new HarmonicStage[]
         {
-            // Stage -6: G7alt (Unresolved Bearish Peak)
-            new HarmonicStage("Stage -6: G7alt (Unresolved)",
-                new int[] { 43, 53, 59, 63, 68 }, // G2, F3, B3, Eb4 (b13), Ab4 (b9)
-                new int[] { 47, 50, 53, 56, 59, 63, 65, 68 }),
-
-            // Stage -5: Gb7#11 (Tritone Sub)
-            new HarmonicStage("Stage -5: Gb7#11 (Tritone Sub)",
-                new int[] { 42, 52, 58, 60, 61 }, // Gb2, E3, Bb3, C4 (#11), Db4
-                new int[] { 49, 52, 54, 58, 60, 61, 64, 66 }),
-
-            // Stage -4: G7b9
-            new HarmonicStage("Stage -4: G7b9",
-                new int[] { 43, 53, 59, 65, 68 }, // G2, F3, B3, F4, Ab4 (b9)
-                new int[] { 50, 53, 55, 59, 62, 65, 68, 71 }),
-
-            // Stage -3: Ab7
-            new HarmonicStage("Stage -3: Ab7",
-                new int[] { 44, 51, 54, 60, 63 }, // Ab2, Eb3, Gb3, C4, Eb4
-                new int[] { 48, 51, 54, 56, 60, 63, 66, 68 }),
-
-            // Stage -2: Bb7#9
-            new HarmonicStage("Stage -2: Bb7#9",
-                new int[] { 46, 50, 56, 61, 65 }, // Bb2, D3, Ab3, Db4 (#9), F4
-                new int[] { 50, 53, 56, 58, 61, 62, 65, 68 }),
-
-            // Stage -1: C7#9
-            new HarmonicStage("Stage -1: C7#9",
-                new int[] { 48, 52, 58, 63, 67 }, // C3, E3, Bb3, Eb4 (#9), G4
-                new int[] { 51, 55, 58, 60, 63, 64, 67, 70 }),
-
-            // Stage  0: Tonic C7 (Equilibrium)
-            new HarmonicStage("Stage  0: Tonic C7",
-                new int[] { 48, 52, 58, 64, 67 }, // C3, E3, Bb3, E4, G4
-                new int[] { 52, 55, 58, 60, 63, 64, 67, 70 }),
-
-            // Stage +1: F9
-            new HarmonicStage("Stage +1: F9",
-                new int[] { 53, 57, 63, 67, 72 }, // F3, A3, Eb4, G4, C5
-                new int[] { 53, 57, 60, 63, 65, 67, 69, 72 }),
-
-            // Stage +2: G9
-            new HarmonicStage("Stage +2: G9",
-                new int[] { 55, 59, 65, 69, 74 }, // G3, B3, F4, A4, D5
-                new int[] { 55, 59, 62, 65, 67, 69, 71, 74 }),
-
-            // Stage +3: A13 (V/ii Pull)
-            new HarmonicStage("Stage +3: A13 (V/ii Pull)",
-                new int[] { 45, 55, 61, 66, 71 }, // A2, G3, C#4, F#4 (13th), B4 (9th)
-                new int[] { 57, 61, 64, 66, 67, 69, 71, 73 }),
-
-            // Stage +4: Bb13
-            new HarmonicStage("Stage +4: Bb13",
-                new int[] { 46, 56, 62, 67, 72 }, // Bb2, Ab3, D4, G4 (13th), C5
-                new int[] { 50, 53, 56, 58, 62, 65, 67, 70 }),
-
-            // Stage +5: G7#9 (Screamer)
-            new HarmonicStage("Stage +5: G7#9",
-                new int[] { 55, 59, 65, 70, 74 }, // G3, B3, F4, Bb4 (#9), D5
-                new int[] { 55, 59, 62, 65, 67, 70, 71, 74 }),
-
-            // Stage +6: Bb13 High Voicing (Unresolved Bullish Peak)
-            new HarmonicStage("Stage +6: Bb13 High Voicing",
-                new int[] { 58, 62, 68, 72, 79 }, // Bb3, D4, Ab4, C5, G5 (13th)
-                new int[] { 58, 62, 65, 68, 70, 72, 74, 79 })
+            new HarmonicStage("Stage -6: Dm [Deep Low]",    new int[] { 45, 50, 53, 57 }, new int[] { 45, 48, 50, 53, 55, 57, 60 }),
+            new HarmonicStage("Stage -5: Em [Low]",         new int[] { 40, 47, 52, 55 }, new int[] { 40, 43, 47, 48, 50, 52, 55 }),
+            new HarmonicStage("Stage -4: F [Low]",          new int[] { 41, 48, 53, 57 }, new int[] { 41, 45, 48, 50, 52, 53, 57 }),
+            new HarmonicStage("Stage -3: G [Low]",          new int[] { 43, 50, 55, 59 }, new int[] { 43, 47, 50, 52, 55, 57, 59 }),
+            new HarmonicStage("Stage -2: Am [Low]",         new int[] { 45, 52, 57, 60 }, new int[] { 45, 48, 52, 53, 55, 57, 60 }),
+            new HarmonicStage("Stage -1: Bdim [Low]",       new int[] { 47, 53, 59, 62 }, new int[] { 47, 50, 53, 55, 57, 59, 62 }),
+            new HarmonicStage("Stage  0: Tonic C [Center]", new int[] { 48, 52, 55, 60 }, new int[] { 48, 52, 55, 57, 60, 62, 64 }),
+            new HarmonicStage("Stage +1: Dm [Ascending]",   new int[] { 50, 57, 62, 65 }, new int[] { 50, 53, 57, 60, 62, 65, 67 }),
+            new HarmonicStage("Stage +2: Em [Ascending]",   new int[] { 52, 59, 64, 67 }, new int[] { 52, 55, 59, 60, 62, 64, 67 }),
+            new HarmonicStage("Stage +3: F [Ascending]",    new int[] { 53, 60, 65, 69 }, new int[] { 53, 57, 60, 62, 64, 65, 69 }),
+            new HarmonicStage("Stage +4: G [Ascending]",    new int[] { 55, 62, 67, 71 }, new int[] { 55, 59, 62, 64, 65, 67, 71 }),
+            new HarmonicStage("Stage +5: Am [High]",        new int[] { 57, 64, 69, 72 }, new int[] { 57, 60, 64, 65, 67, 69, 72 }),
+            new HarmonicStage("Stage +6: Bdim [High Peak]", new int[] { 59, 65, 71, 74 }, new int[] { 59, 62, 65, 67, 69, 71, 74 })
         };
 
         // ==========================================================================
-        // 2. JAZZY RULE SET: Major Lydian Bullish vs Minor ii-V Bearish (C6/9 Center)
+        // 2. D DORIAN (KIND OF BLUE / CARLOS SANTANA)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Soulful Jazz Club, Late Night, Cool & Sophisticated.
+        // PSYCHOLOGY: Grounded on Dm. It is minor, but features a bright natural 6th (B).
+        //             Never sounds depressive. Stage +3 gives that signature Santana 
+        //             bright G Major pop when buying pressure surges.
         // ==========================================================================
-        private readonly HarmonicStage[] jazzLadder = new HarmonicStage[]
+        private readonly HarmonicStage[] dorianLadder = new HarmonicStage[]
         {
-            // Stage -6: Cm(maj7)
-            new HarmonicStage("Stage -6: Cm(maj7)",
-                new int[] { 48, 55, 59, 63, 67 }, // C3, G3, B3 (maj7), Eb4, G4
-                new int[] { 48, 51, 55, 59, 60, 63, 67, 71 }),
-
-            // Stage -5: G7b13
-            new HarmonicStage("Stage -5: G7b13",
-                new int[] { 43, 53, 59, 63, 67 }, // G2, F3, B3, Eb4 (b13), G4
-                new int[] { 50, 53, 55, 59, 62, 63, 65, 67 }),
-
-            // Stage -4: Dm7b5 (Half-Diminished)
-            new HarmonicStage("Stage -4: Dm7b5",
-                new int[] { 50, 56, 60, 65 },     // D3, Ab3 (b5), C4 (b7), F4
-                new int[] { 50, 53, 56, 60, 62, 65, 68, 72 }),
-
-            // Stage -3: Fm9
-            new HarmonicStage("Stage -3: Fm9",
-                new int[] { 41, 48, 51, 55, 56 }, // F2, C3, Eb3, G3, Ab3
-                new int[] { 48, 51, 53, 56, 60, 63, 65, 68 }),
-
-            // Stage -2: Abmaj7#11 (Dark Float)
-            new HarmonicStage("Stage -2: Abmaj7#11 (Dark Float)",
-                new int[] { 44, 51, 55, 60, 62 }, // Ab2, Eb3, G3 (maj7), C4, D4 (#11)
-                new int[] { 44, 48, 51, 55, 56, 60, 62, 63 }),
-
-            // Stage -1: Cm9
-            new HarmonicStage("Stage -1: Cm9",
-                new int[] { 48, 55, 58, 62, 63 }, // C3, G3, Bb3, D4, Eb4
-                new int[] { 48, 51, 55, 58, 60, 62, 63, 67 }),
-
-            // Stage  0: Tonic C6/9 (Stable Neutral Center)
-            new HarmonicStage("Stage  0: Tonic C6/9 (Equilibrium)",
-                new int[] { 48, 52, 57, 62, 67 }, // C3, E3, A3 (6th), D4 (9th), G4
-                new int[] { 48, 52, 55, 57, 60, 62, 64, 67 }),
-
-            // Stage +1: Cmaj9
-            new HarmonicStage("Stage +1: Cmaj9",
-                new int[] { 48, 55, 59, 62, 64 }, // C3, G3, B3 (maj7), D4, E4
-                new int[] { 48, 52, 55, 59, 60, 62, 64, 67 }),
-
-            // Stage +2: Fmaj7#11 (Lydian Lift)
-            new HarmonicStage("Stage +2: Fmaj7#11",
-                new int[] { 53, 60, 64, 67, 71 }, // F3, C4, E4 (maj7), G4, B4 (#11)
-                new int[] { 53, 57, 60, 64, 65, 67, 71, 72 }),
-
-            // Stage +3: G13
-            new HarmonicStage("Stage +3: G13",
-                new int[] { 43, 53, 59, 64, 69 }, // G2, F3, B3, E4 (13th), A4 (9th)
-                new int[] { 50, 53, 55, 59, 62, 64, 67, 69 }),
-
-            // Stage +4: Ebmaj9#11
-            new HarmonicStage("Stage +4: Ebmaj9#11",
-                new int[] { 51, 58, 62, 65, 69 }, // Eb3, Bb3, D4 (maj7), F4, A4 (#11)
-                new int[] { 51, 55, 58, 62, 63, 65, 69, 70 }),
-
-            // Stage +5: Abmaj7#11
-            new HarmonicStage("Stage +5: Abmaj7#11",
-                new int[] { 56, 60, 67, 70, 74 }, // Ab3, C4, G4 (maj7), Bb4, D5 (#11)
-                new int[] { 56, 60, 63, 67, 68, 70, 74, 75 }),
-
-            // Stage +6: Cmaj13#11 (Open Cosmic Climax)
-            new HarmonicStage("Stage +6: Cmaj13#11 (Open)",
-                new int[] { 48, 55, 59, 64, 66, 69 }, // C3, G3, B3, E4, F#4 (#11), A4 (13th)
-                new int[] { 48, 52, 55, 59, 62, 64, 66, 69 })
+            new HarmonicStage("Stage -6: Em [Deep Low]",       new int[] { 40, 47, 52 }, new int[] { 40, 43, 47, 48, 50, 52, 55 }),
+            new HarmonicStage("Stage -5: F [Low]",            new int[] { 41, 48, 53 }, new int[] { 41, 45, 48, 50, 52, 53, 57 }),
+            new HarmonicStage("Stage -4: G [Low]",            new int[] { 43, 50, 55 }, new int[] { 43, 47, 50, 52, 55, 57, 59 }),
+            new HarmonicStage("Stage -3: Am [Low]",           new int[] { 45, 52, 57 }, new int[] { 45, 48, 52, 53, 55, 57, 60 }),
+            new HarmonicStage("Stage -2: Bdim [Low]",         new int[] { 47, 53, 59 }, new int[] { 47, 50, 53, 55, 57, 59, 62 }),
+            new HarmonicStage("Stage -1: C [Low bVII]",       new int[] { 48, 55, 60 }, new int[] { 48, 52, 55, 57, 60, 62, 64 }),
+            new HarmonicStage("Stage  0: Tonic Dm [Center]",  new int[] { 50, 57, 62 }, new int[] { 50, 53, 55, 57, 60, 62, 65 }),
+            new HarmonicStage("Stage +1: Em [Ascending]",     new int[] { 52, 59, 64 }, new int[] { 52, 55, 57, 59, 62, 64, 67 }),
+            new HarmonicStage("Stage +2: F [Ascending Lift]", new int[] { 53, 60, 65 }, new int[] { 53, 57, 60, 62, 64, 65, 69 }),
+            new HarmonicStage("Stage +3: G [Santana Pop]",    new int[] { 55, 62, 67 }, new int[] { 55, 59, 62, 65, 67, 71, 74 }),
+            new HarmonicStage("Stage +4: Am [High v]",        new int[] { 57, 64, 69 }, new int[] { 57, 60, 64, 67, 69, 72, 76 }),
+            new HarmonicStage("Stage +5: Bdim [High vi°]",    new int[] { 59, 65, 71 }, new int[] { 59, 62, 65, 69, 71, 74, 77 }),
+            new HarmonicStage("Stage +6: C [High Peak]",      new int[] { 60, 67, 72 }, new int[] { 60, 64, 67, 71, 72, 76, 79 })
         };
 
         // ==========================================================================
-        // 3. HYBRID RULE SET: Blues ±1..±3 + Jazz ±4..±6
+        // 3. A AEOLIAN (CINEMATIC DRAMA / HANS ZIMMER)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Epic Film Score, Intense Emotional Gravity, Heroic & Serious.
+        // PSYCHOLOGY: Natural minor centered on Am. Moving left into deep bass sounds 
+        //             like impending doom. Moving right delivers triumphant major breakouts
+        //             at Stage +2 (C Major) and Stage +5 (F Major heroic surge).
         // ==========================================================================
-        private readonly HarmonicStage[] hybridLadder = new HarmonicStage[]
+        private readonly HarmonicStage[] aeolianLadder = new HarmonicStage[]
         {
-            // Stage -6: Jazz Cm(maj7)
-            new HarmonicStage("Stage -6: Cm(maj7) [Jazz Extreme]",
-                new int[] { 48, 55, 59, 63, 67 },
-                new int[] { 48, 51, 55, 59, 60, 63, 67, 71 }),
+            new HarmonicStage("Stage -6: Bdim [Deep Floor]",   new int[] { 47, 53, 59 }, new int[] { 45, 47, 50, 53, 55, 57, 59 }),
+            new HarmonicStage("Stage -5: C [Low bIII]",        new int[] { 48, 55, 60 }, new int[] { 47, 48, 52, 55, 57, 60, 62 }),
+            new HarmonicStage("Stage -4: Dm [Low iv]",         new int[] { 50, 57, 62 }, new int[] { 48, 50, 53, 57, 58, 62, 65 }),
+            new HarmonicStage("Stage -3: Em [Low v]",          new int[] { 52, 59, 64 }, new int[] { 50, 52, 55, 59, 60, 64, 67 }),
+            new HarmonicStage("Stage -2: F [Low bVI]",         new int[] { 53, 60, 65 }, new int[] { 52, 53, 57, 60, 62, 65, 69 }),
+            new HarmonicStage("Stage -1: G [Low bVII]",        new int[] { 55, 62, 67 }, new int[] { 53, 55, 59, 62, 64, 67, 71 }),
+            new HarmonicStage("Stage  0: Tonic Am [Center]",   new int[] { 57, 64, 69 }, new int[] { 53, 57, 60, 64, 65, 69, 72 }),
+            new HarmonicStage("Stage +1: Bdim [Ascending]",    new int[] { 59, 65, 71 }, new int[] { 55, 59, 62, 65, 67, 71, 74 }),
+            new HarmonicStage("Stage +2: C [Major Breakout]",  new int[] { 60, 67, 72 }, new int[] { 57, 60, 64, 67, 69, 72, 76 }),
+            new HarmonicStage("Stage +3: Dm [Ascending]",      new int[] { 62, 69, 74 }, new int[] { 58, 62, 65, 69, 70, 74, 77 }),
+            new HarmonicStage("Stage +4: Em [Ascending]",      new int[] { 64, 71, 76 }, new int[] { 60, 64, 67, 71, 72, 76, 79 }),
+            new HarmonicStage("Stage +5: F [Heroic Surge]",    new int[] { 65, 72, 77 }, new int[] { 62, 65, 69, 72, 74, 77, 81 }),
+            new HarmonicStage("Stage +6: G [High Climax]",     new int[] { 67, 74, 79 }, new int[] { 64, 67, 71, 74, 76, 79, 83 })
+        };
 
-            // Stage -5: Jazz G7b13
-            new HarmonicStage("Stage -5: G7b13 [Jazz Extreme]",
-                new int[] { 43, 53, 59, 63, 67 },
-                new int[] { 50, 53, 55, 59, 62, 63, 65, 67 }),
+        // ==========================================================================
+        // 4. G MIXOLYDIAN (SOUTHERN ROCK / BLUES GROOVE)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Upbeat Jam Band, Grateful Dead, Allman Brothers Blues Roll.
+        // PSYCHOLOGY: Rooted on G Major with a flat 7th (F natural). Natural, rolling 
+        //             blues bounce that keeps trading sessions lively without fatigue.
+        // ==========================================================================
+        private readonly HarmonicStage[] mixolydianLadder = new HarmonicStage[]
+        {
+            new HarmonicStage("Stage -6: Am [Deep Ground]",    new int[] { 45, 52, 57 }, new int[] { 43, 45, 48, 52, 55, 57, 60 }),
+            new HarmonicStage("Stage -5: Bdim [Low]",          new int[] { 47, 53, 59 }, new int[] { 45, 47, 50, 53, 55, 59, 62 }),
+            new HarmonicStage("Stage -4: C [Low IV]",          new int[] { 48, 55, 60 }, new int[] { 47, 48, 52, 55, 57, 60, 64 }),
+            new HarmonicStage("Stage -3: Dm [Low v]",          new int[] { 50, 57, 62 }, new int[] { 48, 50, 53, 57, 59, 62, 65 }),
+            new HarmonicStage("Stage -2: Em [Low vi]",         new int[] { 52, 59, 64 }, new int[] { 50, 52, 55, 59, 60, 64, 67 }),
+            new HarmonicStage("Stage -1: F [Low bVII]",        new int[] { 53, 60, 65 }, new int[] { 52, 53, 57, 60, 62, 65, 69 }),
+            new HarmonicStage("Stage  0: Tonic G [Center]",    new int[] { 55, 62, 67 }, new int[] { 53, 55, 59, 62, 65, 67, 71 }),
+            new HarmonicStage("Stage +1: Am [Ascending]",      new int[] { 57, 64, 69 }, new int[] { 55, 57, 60, 64, 67, 69, 72 }),
+            new HarmonicStage("Stage +2: Bdim [Ascending]",    new int[] { 59, 65, 71 }, new int[] { 57, 59, 62, 65, 69, 71, 74 }),
+            new HarmonicStage("Stage +3: C [Sweet Major Lift]",new int[] { 60, 67, 72 }, new int[] { 59, 60, 64, 67, 71, 72, 76 }),
+            new HarmonicStage("Stage +4: Dm [Ascending]",      new int[] { 62, 69, 74 }, new int[] { 60, 62, 65, 69, 72, 74, 77 }),
+            new HarmonicStage("Stage +5: Em [Ascending]",      new int[] { 64, 71, 76 }, new int[] { 62, 64, 67, 71, 74, 76, 79 }),
+            new HarmonicStage("Stage +6: F [Rock Cadence]",    new int[] { 65, 72, 77 }, new int[] { 64, 65, 69, 72, 76, 77, 81 })
+        };
 
-            // Stage -4: Jazz Dm7b5
-            new HarmonicStage("Stage -4: Dm7b5 [Jazz Extreme]",
-                new int[] { 50, 56, 60, 65 },
-                new int[] { 50, 53, 56, 60, 62, 65, 68, 72 }),
+        // ==========================================================================
+        // 5. BLACK KEYS PENTATONIC (ZERO-CONFLICT ZEN / AMBIENT SPA)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Temple Bells, Ambient Floating Chimes, Brian Eno, Total Peace.
+        // PSYCHOLOGY: Uses exclusively the 5 black keys (F#, G#, A#, C#, D#). Because 
+        //             there are ZERO half-steps anywhere, it is physically impossible to 
+        //             play a clashing note. Perfect for high-volatility, stressful chop.
+        // ==========================================================================
+        private readonly HarmonicStage[] blackKeysLadder = new HarmonicStage[]
+        {
+            new HarmonicStage("Stage -6: F#sus2 [Deep Gong]",  new int[] { 42, 49, 54 }, new int[] { 42, 46, 49, 51, 54, 58, 61 }),
+            new HarmonicStage("Stage -5: G#m [Low Bell]",      new int[] { 44, 51, 56 }, new int[] { 44, 46, 49, 51, 54, 56, 61 }),
+            new HarmonicStage("Stage -4: A#m [Low Float]",     new int[] { 46, 53, 58 }, new int[] { 46, 49, 51, 54, 56, 58, 63 }),
+            new HarmonicStage("Stage -3: C#sus2 [Low Chime]",  new int[] { 49, 56, 61 }, new int[] { 49, 51, 54, 56, 58, 61, 66 }),
+            new HarmonicStage("Stage -2: D#m [Low Zen]",       new int[] { 51, 58, 63 }, new int[] { 51, 54, 56, 58, 61, 63, 66 }),
+            new HarmonicStage("Stage -1: F#sus2 [Low Mid]",    new int[] { 54, 61, 66 }, new int[] { 54, 56, 58, 61, 63, 66, 70 }),
+            new HarmonicStage("Stage  0: Tonic F# [Zen]",      new int[] { 54, 58, 61 }, new int[] { 54, 58, 61, 63, 66, 70, 73 }),
+            new HarmonicStage("Stage +1: G#m [Ascending]",     new int[] { 56, 63, 68 }, new int[] { 56, 58, 61, 63, 66, 68, 73 }),
+            new HarmonicStage("Stage +2: A#m [Ascending]",     new int[] { 58, 65, 70 }, new int[] { 58, 61, 63, 66, 68, 70, 75 }),
+            new HarmonicStage("Stage +3: C#sus2 [Clear Air]",  new int[] { 61, 68, 73 }, new int[] { 61, 63, 66, 68, 70, 73, 78 }),
+            new HarmonicStage("Stage +4: D#m [High Shimmer]",  new int[] { 63, 70, 75 }, new int[] { 63, 66, 68, 70, 73, 75, 78 }),
+            new HarmonicStage("Stage +5: F#sus2 [High Glass]", new int[] { 66, 73, 78 }, new int[] { 66, 68, 70, 73, 75, 78, 82 }),
+            new HarmonicStage("Stage +6: G#m [Sky Temple]",    new int[] { 68, 75, 80 }, new int[] { 68, 70, 73, 75, 78, 80, 85 })
+        };
 
-            // Stage -3: Blues Ab7
-            new HarmonicStage("Stage -3: Ab7 [Blues]",
-                new int[] { 44, 51, 54, 60, 63 },
-                new int[] { 48, 51, 54, 56, 60, 63, 66, 68 }),
-
-            // Stage -2: Blues Bb7#9
-            new HarmonicStage("Stage -2: Bb7#9 [Blues]",
-                new int[] { 46, 50, 56, 61, 65 },
-                new int[] { 50, 53, 56, 58, 61, 62, 65, 68 }),
-
-            // Stage -1: Blues C7#9
-            new HarmonicStage("Stage -1: C7#9 [Blues]",
-                new int[] { 48, 52, 58, 63, 67 },
-                new int[] { 51, 55, 58, 60, 63, 64, 67, 70 }),
-
-            // Stage  0: Tonic C7 (Equilibrium)
-            new HarmonicStage("Stage  0: Tonic C7",
-                new int[] { 48, 52, 58, 64, 67 },
-                new int[] { 52, 55, 58, 60, 63, 64, 67, 70 }),
-
-            // Stage +1: Blues F9
-            new HarmonicStage("Stage +1: F9 [Blues]",
-                new int[] { 53, 57, 63, 67, 72 },
-                new int[] { 53, 57, 60, 63, 65, 67, 69, 72 }),
-
-            // Stage +2: Blues G9
-            new HarmonicStage("Stage +2: G9 [Blues]",
-                new int[] { 55, 59, 65, 69, 74 },
-                new int[] { 55, 59, 62, 65, 67, 69, 71, 74 }),
-
-            // Stage +3: Blues A13
-            new HarmonicStage("Stage +3: A13 [Blues]",
-                new int[] { 45, 55, 61, 66, 71 },
-                new int[] { 57, 61, 64, 66, 67, 69, 71, 73 }),
-
-            // Stage +4: Jazz Ebmaj9#11
-            new HarmonicStage("Stage +4: Ebmaj9#11 [Jazz Extreme]",
-                new int[] { 51, 58, 62, 65, 69 },
-                new int[] { 51, 55, 58, 62, 63, 65, 69, 70 }),
-
-            // Stage +5: Jazz Abmaj7#11
-            new HarmonicStage("Stage +5: Abmaj7#11 [Jazz Extreme]",
-                new int[] { 56, 60, 67, 70, 74 },
-                new int[] { 56, 60, 63, 67, 68, 70, 74, 75 }),
-
-            // Stage +6: Jazz Cmaj13#11
-            new HarmonicStage("Stage +6: Cmaj13#11 [Jazz Extreme]",
-                new int[] { 48, 55, 59, 64, 66, 69 },
-                new int[] { 48, 52, 55, 59, 62, 64, 66, 69 })
+        // ==========================================================================
+        // 6. QUARTAL HARMONY (MCCOY TYNER / MODERN JAZZ FOURTHS)
+        // --------------------------------------------------------------------------
+        // VIBE & FEEL: Modern Acoustic Concert Grand, Open, Glassy, Sophisticated.
+        // PSYCHOLOGY: Stacked in perfect fourths (D-G-C, E-A-D) like McCoy Tyner in 
+        //             A Love Supreme. Neither cheesy major nor depressive minor; 
+        //             it creates a sleek, high-tech architectural acoustic space.
+        // ==========================================================================
+        private readonly HarmonicStage[] quartalLadder = new HarmonicStage[]
+        {
+            new HarmonicStage("Stage -6: E-4th [Deep Glass]",  new int[] { 40, 45, 50 }, new int[] { 40, 43, 47, 50, 52, 55, 57 }),
+            new HarmonicStage("Stage -5: F-4th [Low Stack]",   new int[] { 41, 47, 52 }, new int[] { 41, 45, 48, 52, 53, 57, 60 }),
+            new HarmonicStage("Stage -4: G-4th [Low Stack]",   new int[] { 43, 48, 53 }, new int[] { 43, 47, 50, 53, 55, 59, 62 }),
+            new HarmonicStage("Stage -3: A-4th [Low Stack]",   new int[] { 45, 50, 55 }, new int[] { 45, 48, 52, 55, 57, 60, 64 }),
+            new HarmonicStage("Stage -2: B-4th [Low Stack]",   new int[] { 47, 52, 57 }, new int[] { 47, 50, 53, 57, 59, 62, 65 }),
+            new HarmonicStage("Stage -1: C-4th [Low Center]",  new int[] { 48, 53, 59 }, new int[] { 48, 52, 55, 59, 60, 64, 67 }),
+            new HarmonicStage("Stage  0: D-4th [Quartal Home]",new int[] { 50, 55, 60 }, new int[] { 50, 53, 57, 60, 62, 65, 69 }),
+            new HarmonicStage("Stage +1: E-4th [Ascending]",   new int[] { 52, 57, 62 }, new int[] { 52, 55, 59, 62, 64, 67, 71 }),
+            new HarmonicStage("Stage +2: F-4th [Ascending]",   new int[] { 53, 59, 64 }, new int[] { 53, 57, 60, 64, 65, 69, 72 }),
+            new HarmonicStage("Stage +3: G-4th [Airy Lift]",   new int[] { 55, 60, 65 }, new int[] { 55, 59, 62, 65, 67, 71, 74 }),
+            new HarmonicStage("Stage +4: A-4th [High Modern]", new int[] { 57, 62, 67 }, new int[] { 57, 60, 64, 67, 69, 72, 76 }),
+            new HarmonicStage("Stage +5: B-4th [High Crystal]",new int[] { 59, 64, 69 }, new int[] { 59, 62, 65, 69, 71, 74, 77 }),
+            new HarmonicStage("Stage +6: C-4th [Sky Climax]",  new int[] { 60, 65, 71 }, new int[] { 60, 64, 67, 71, 72, 76, 79 })
         };
         #endregion
 
@@ -293,7 +232,6 @@ namespace NinjaTrader.NinjaScript.Indicators
         private int currentLadderIndex = 6;
         private int melodyStepIndex = 3;
 
-        // Rhythmic Clock & Energy Accumulator
         private DateTime lastBeatPlayTime = DateTime.MinValue;
         private DateTime lastStageChangeTime = DateTime.MinValue;
         private long accumulatedBeatVolume = 0;
@@ -305,7 +243,7 @@ namespace NinjaTrader.NinjaScript.Indicators
         {
             if (State == State.SetDefaults)
             {
-                Description                 = "TheBluesTraderV2: Quantized rhythmic blues trading instrument with order-flow energy accumulation.";
+                Description                 = "TheBluesTraderV2: Keyboard-slider order flow sonifier with pure consonant diatonic & quartal modes.";
                 Name                        = "TheBluesTraderV2";
                 Calculate                   = Calculate.OnEachTick;
                 IsOverlay                   = false;
@@ -333,14 +271,14 @@ namespace NinjaTrader.NinjaScript.Indicators
                 VelScale                    = 100.0;
                 MoveThresh                  = 2.0;
 
-                // 4. Blues Musical & Rhythmic Engine Defaults
+                // 4. Musical & Rhythmic Engine Defaults
                 EnableAudio                 = true;
                 MidiInstrument              = 28; // Electric Guitar (Clean)
-                ProgressionStyle            = BluesProgressionStyle.Hybrid;
+                ProgressionStyle            = BluesProgressionStyle.Dorian;
                 VoicingMode                 = BluesVoicingMode.DynamicEventsAndMelody;
-                RhythmPaceMs                = 450; // 450ms ≈ 133 BPM musical tempo grid
+                RhythmPaceMs                = 450; // Musical tempo grid (450ms ≈ 133 BPM)
                 SyncopateMajorEvents        = true;
-                ChordDwellMs                = 800; // Minimum time a chord grooves before changing
+                ChordDwellMs                = 600; // Stepwise transition rate per chord
                 BaseVelocity                = 80;
                 MinVolumeFilter             = 1;
 
@@ -487,7 +425,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             signalCodeSeries[0] = finalSig;
 
             // ==========================================================================
-            // (6) HARMONIC ENGINE & RHYTHMIC TICK ACCUMULATOR
+            // (6) HARMONIC ENGINE & STEPWISE HARMONIC SLEW LIMITER
             // ==========================================================================
             double tickSize = (Instrument != null && Instrument.MasterInstrument != null && Instrument.MasterInstrument.TickSize > 0)
                 ? Instrument.MasterInstrument.TickSize
@@ -511,32 +449,55 @@ namespace NinjaTrader.NinjaScript.Indicators
                 }
             }
 
-            // ACCUMULATE TICK ENERGY DURING THE CURRENT RHYTHMIC WINDOW
+            // ACCUMULATE TICK ENERGY
             accumulatedBeatVolume += (long)Volume[0];
             accumulatedNetTicks += (direction * ticksMoved);
             if (Math.Abs(tapeScore) > Math.Abs(peakGasInBeat))
                 peakGasInBeat = tapeScore;
 
-            // COMPOSITE ORDER FLOW SCORE: Gas (50%) + Mom (35%) + Velocity (15%)
+            // COMPOSITE ORDER FLOW SCORE
             double compositeFlow = (0.50 * tapeScore) + (0.35 * currentMomV) + (0.15 * pVelV);
             double flowPerStage = StrongLevel / 3.0; // ~13.3 pts per stage
             int targetStage = (int)Math.Round(compositeFlow / Math.Max(1.0, flowPerStage));
             int targetIndex = Math.Max(0, Math.Min(12, targetStage + 6));
 
-            // Select active ladder based on progression style
-            HarmonicStage[] activeLadder = (ProgressionStyle == BluesProgressionStyle.Blues)
-                ? bluesLadder
-                : (ProgressionStyle == BluesProgressionStyle.Jazz ? jazzLadder : hybridLadder);
+            // Select active ladder based on chosen style
+            HarmonicStage[] activeLadder = dorianLadder;
+            switch (ProgressionStyle)
+            {
+                case BluesProgressionStyle.Diatonic:
+                    activeLadder = diatonicLadder;
+                    break;
+                case BluesProgressionStyle.Dorian:
+                    activeLadder = dorianLadder;
+                    break;
+                case BluesProgressionStyle.Aeolian:
+                    activeLadder = aeolianLadder;
+                    break;
+                case BluesProgressionStyle.Mixolydian:
+                    activeLadder = mixolydianLadder;
+                    break;
+                case BluesProgressionStyle.BlackKeysPentatonic:
+                    activeLadder = blackKeysLadder;
+                    break;
+                case BluesProgressionStyle.QuartalHarmony:
+                    activeLadder = quartalLadder;
+                    break;
+            }
 
+            // STEPWISE HARMONIC WALK (NO TELEPORTING)
             DateTime now = DateTime.UtcNow;
             if (targetIndex != currentLadderIndex)
             {
-                bool isSignificantMove = Math.Abs(targetIndex - currentLadderIndex) >= 2;
                 bool hasDwellExpired = (now - lastStageChangeTime).TotalMilliseconds >= ChordDwellMs;
 
-                if (isSignificantMove || hasDwellExpired)
+                if (hasDwellExpired)
                 {
-                    currentLadderIndex = targetIndex;
+                    if (targetIndex > currentLadderIndex)
+                        currentLadderIndex++;
+                    else if (targetIndex < currentLadderIndex)
+                        currentLadderIndex--;
+
                     lastStageChangeTime = now;
                     melodyStepIndex = activeLadder[currentLadderIndex].MelodyScale.Length / 2;
                 }
@@ -563,7 +524,6 @@ namespace NinjaTrader.NinjaScript.Indicators
                 {
                     PlayQuantizedBeat(state, finalSig, spinning, freeRoll, peakGasInBeat, accumulatedBeatVolume, accumulatedNetTicks, activeStage, isMajorEvent);
 
-                    // Reset energy accumulators for the next musical beat
                     accumulatedBeatVolume = 0;
                     accumulatedNetTicks = 0;
                     peakGasInBeat = 0;
@@ -626,7 +586,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             );
 
             int bpm = (int)Math.Round(60000.0 / Math.Max(50, RhythmPaceMs));
-            string line3 = string.Format("BLUES TRADER V2: {0}  |  Style: {1}  |  Tempo: {2}ms ({3} BPM)",
+            string line3 = string.Format("PIANO FLOW: {0}  |  Scale: {1}  |  Tempo: {2}ms ({3} BPM)",
                 activeStage.Name,
                 ProgressionStyle,
                 RhythmPaceMs,
@@ -650,11 +610,9 @@ namespace NinjaTrader.NinjaScript.Indicators
         private void PlayQuantizedBeat(int state, int finalSig, bool spinning, bool freeRoll,
             double peakGas, long windowVolume, int netTicksInWindow, HarmonicStage stage, bool isMajorEvent)
         {
-            // Pick attack velocity scales dynamically with total window volume & peak tape gas
             double absGas = Math.Min(100.0, Math.Abs(peakGas));
             int dynamicVelocity = (int)Math.Max(42, Math.Min(120, BaseVelocity + (absGas * 0.35)));
 
-            // High volume burst adds pick attack bite
             if (windowVolume > 50)
                 dynamicVelocity = Math.Min(127, dynamicVelocity + 10);
 
@@ -688,7 +646,6 @@ namespace NinjaTrader.NinjaScript.Indicators
             // 4. CHORD VOICING vs STEPWISE MELODY ON THE BEAT
             if (VoicingMode == BluesVoicingMode.PrimarilyChords || isMajorEvent)
             {
-                // Play open voiced chord belonging strictly to the active stage
                 int notesToPlay = (Math.Abs(netTicksInWindow) > 1 || isMajorEvent)
                     ? stage.ChordNotes.Length
                     : Math.Min(4, stage.ChordNotes.Length);
@@ -704,20 +661,16 @@ namespace NinjaTrader.NinjaScript.Indicators
             }
             else
             {
-                // ==================================================================
-                // QUANTIZED MELODY SOLO (Steps based on net ticks across the beat window)
-                // ==================================================================
+                // QUANTIZED MELODY SOLO
                 int scaleLen = stage.MelodyScale.Length;
 
                 if (netTicksInWindow > 0)
                 {
-                    // Net upward pressure: step up, clamp at top
                     int steps = Math.Min(2, netTicksInWindow);
                     melodyStepIndex = Math.Min(scaleLen - 1, melodyStepIndex + steps);
                 }
                 else if (netTicksInWindow < 0)
                 {
-                    // Net downward pressure: step down, clamp at bottom root
                     int steps = Math.Min(2, Math.Abs(netTicksInWindow));
                     melodyStepIndex = Math.Max(0, melodyStepIndex - steps);
                 }
@@ -800,11 +753,11 @@ namespace NinjaTrader.NinjaScript.Indicators
 
         [NinjaScriptProperty]
         [Range(0, 127)]
-        [Display(Name = "MIDI Instrument", Description = "General MIDI patch (28 = Clean Electric Guitar, 16 = Drawbar Organ, 4 = Electric Piano)", Order = 2, GroupName = "4. The Blues Trader Audio")]
+        [Display(Name = "MIDI Instrument", Description = "General MIDI patch (28 = Clean Electric Guitar, 0 = Grand Piano, 16 = Drawbar Organ)", Order = 2, GroupName = "4. The Blues Trader Audio")]
         public int MidiInstrument { get; set; }
 
         [NinjaScriptProperty]
-        [Display(Name = "Progression Style", Description = "Harmonic grammar: Hybrid, Blues (all dominant/altered), or Jazz (Lydian/ii-V)", Order = 3, GroupName = "4. The Blues Trader Audio")]
+        [Display(Name = "Progression Style", Description = "Harmonic scale world: Diatonic, Dorian, Aeolian, Mixolydian, BlackKeysPentatonic, QuartalHarmony", Order = 3, GroupName = "4. The Blues Trader Audio")]
         public BluesProgressionStyle ProgressionStyle { get; set; }
 
         [NinjaScriptProperty]
@@ -822,7 +775,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 
         [NinjaScriptProperty]
         [Range(100, 5000)]
-        [Display(Name = "Chord Dwell (ms)", Description = "Minimum time a chord holds before advancing (prevents fast jitter on tick charts)", Order = 7, GroupName = "4. The Blues Trader Audio")]
+        [Display(Name = "Chord Dwell (ms)", Description = "Time between stepwise chord transitions (controls turnaround speed)", Order = 7, GroupName = "4. The Blues Trader Audio")]
         public int ChordDwellMs { get; set; }
 
         [NinjaScriptProperty]

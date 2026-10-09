@@ -1,14 +1,19 @@
 # 🎸 TheBluesTraderV2
 
-> **Upgrade to AudioTapeReader.**  
-> *This is an Order-Flow Audio Dynamics player for NinjaTrader 8. Transforms market microstructure, CVD delta, and tape momentum into dynamic "music".*
+> **Major Upgrade to AudioTapeReader.**  
+> *Real-Time Order-Flow Dynamics Sonifier for NinjaTrader 8. Translates market microstructure, CVD delta, and physical tape momentum into music.*
 
 ---
 
 ## 📖 Overview
 
-* **Market Flow Governs the Chord:** Heavy selling flow drives the harmony downward into deep, moody minor and altered blues chords ($Gm9$, $Fm9$, $Cm11$). Bullish buying climbs into soaring dominant 9th and Lydian 13th chords ($F9$, $G9$, $C13$).
-* **Musical Rhythmic Quantization:** Notes are quantized to a musical tempo grid (e.g., $133\text{ BPM}$ / $450\text{ ms}$). Micro-ticks pool into an **Energy Accumulator**, striking in time with dynamic velocity and pick attack scaled to institutional volume. Market stress conditions (Absorption, Braking) are expressed through authentic blues articulations (rhythmic guitar chops and guide-tone stutters) rather than dissonant clashing frequencies.
+Auditory aid for the tape.
+
+**TheBluesTraderV2** bridges order-flow physics with the **Piano Keyboard**:
+* **Price Moves UP (Bullish):** Hands physically glide to the **RIGHT** across the keys $\rightarrow$ pitches strictly ascend into bright, light treble registers.
+* **Price Moves DOWN (Bearish):** Hands physically glide to the **LEFT** across the keys $\rightarrow$ pitches strictly descend into the warm, resonant acoustic bass.
+* **Stepwise Harmonic Walk:** A built-in slew rate limiter prevents teleportation. If the tape turns around from $-3$ to $+2$, the chords sequentially walk one step at a time ($\mathbf{-3} \rightarrow \mathbf{-2} \rightarrow \mathbf{-1} \rightarrow \mathbf{0} \rightarrow \mathbf{+1} \rightarrow \mathbf{+2}$), preserving smooth voice leading during reversals.
+* **Rhythmic Quantization Grid:** Notes are clocked to a musical tempo grid (e.g., $133\text{ BPM}$ / $450\text{ ms}$). Micro-ticks pool into an **Energy Accumulator**, striking in rhythm with dynamic pick attack velocity scaled to institutional volume.
 
 ---
 
@@ -17,47 +22,58 @@
 ### 1. Vehicle Physics Engine
 * **Tape Gas (`tapeScore`):** Recent net CVD delta percentage, measuring instantaneous aggression.
 * **Momentum (`momV`):** Inertial driven velocity modeled with drag friction.
-* **Price Velocity (`pVelV`):** ATR-normalized traction reading (detects whether price is actually rolling or stuck).
+* **Price Velocity (`pVelV`):** ATR-normalized traction reading (distinguishes moving markets from stationary absorption).
 * **State Machine:**
   * **Cruising / Idle:** Equilibrium flow.
   * **Accelerating:** Gas floored in direction of momentum.
   * **Coasting:** Gas released, drifting on momentum.
-  * **Braking:** Opposing delta slamming into existing price momentum.
-  * **Absorption (Spinning Wheels):** Heavy gas floored, zero price traction.
+  * **Braking:** Opposing delta slamming into existing price momentum (voiced as a tight, percussive bass choke).
+  * **Absorption (Spinning Wheels):** Heavy gas floored, zero price traction (voiced as a guide-tone stutter).
   * **Momentum Drift (Free Roll):** Price rolling on thin liquidity with no gas.
 
-### 2. Three Selectable Progression Engines
-Selectable directly in the indicator parameters:
+---
 
-| Style | Harmonic Rule Set | Ideal Market Context |
+### 2. Six Zero-Conflict Scale Worlds
+Every scale is locked to a single harmonic system—**zero accidentals, zero clashing semitones**:
+
+| Progression Style | Musical Personality & Feel | Trading Psychology |
 | :--- | :--- | :--- |
-| **Blues** | Pure Dominant-family ($7, 9, 13, \text{altered}$). Bullish uses natural extensions ($9, 13$); bearish uses dark alterations ($\flat9, \sharp9, \flat13, \sharp11$). Extremes ($\pm5, \pm6$) stay unresolved. | Classic trending sessions with sustained delta pressure. |
-| **Jazz** | Major Lydian color on the bull side ($C\text{maj}9 \rightarrow F\text{maj}7\sharp11 \rightarrow C\text{maj}13\sharp11$) vs. dark $ii\text{-}V$ grammar on the bear side ($Cm9 \rightarrow Dm7\flat5 \rightarrow G7\flat13$). Neutral $C6/9$ center. | High-contrast acoustic listening; distinct bull/bear textures. |
-| **Hybrid** *(Default)* | Uses **Blues** grammar for ordinary flow (Stages $\pm1$ to $\pm3$) and shifts to **Jazz** grammar at extreme regimes (Stages $\pm4$ to $\pm6$). | Daytrading & Scalping. The shift in chord family instantly signals that a major move is breaking out. |
+| **`Dorian`** *(Default)* | **Soulful Jazz Club** (*Kind of Blue* / Santana) | Minor root ($Dm$), but features a sweet, bright natural 6th ($B$). Cool, relaxed, never depressive. Stage +3 gives a bright major pop on buyer surges. |
+| **`Diatonic`** | **Pure Daylight & Clarity** (C Major / Ionian) | Grounded on Middle C. All natural white keys. Classical, crystal clear, zero ambiguity. |
+| **`Aeolian`** | **Cinematic Drama** (A Minor / Hans Zimmer) | Serious, epic film score gravity. Deep left steps sound ominous; bull breakouts hit triumphant major landings at Stage +2 ($C$) and Stage +5 ($F$). |
+| **`Mixolydian`** | **Southern Rock & Blues Roll** (G Dominant) | Major feel with a flat 7th ($F\natural$). Upbeat rolling groove (Allman Brothers / Grateful Dead). |
+| **`BlackKeysPentatonic`** | **Ambient Spa / Zen Bells** (F♯ Pentatonic) | Uses **only the 5 black keys** on the piano. Zero half-steps anywhere. Mathematically impossible to play a conflicting note. Perfect for high-volatility, stressful chop. |
+| **`QuartalHarmony`** | **Modern Acoustic Jazz** (Stacked 4ths) | Stacked in perfect fourths ($D\text{--}G\text{--}C$) like McCoy Tyner with John Coltrane. Open, glassy, architectural, neither cheesy major nor sad minor. |
 
-### 3. The 13-Stage Progression Ladder
+---
+
+### 3. The Physical 13-Stage Keyboard Map
 
 ```
-[+6]  Cmaj13#11 / Bb13 (Cosmic Climax)
-[+5]  G7#9 Hendrix Screamer / Abmaj7#11
-[+4]  F13 / Ebmaj9#11 (High Altitude Push)
-[+3]  A13 / G13 (Breakout Euphoria)
-[+2]  G9 / Fmaj7#11 (Dominant Climax)
-[+1]  F9 / Cmaj9 (Momentum Lift)
-[ 0]  C7 / C6/9 (EQUILIBRIUM CENTER)
-[-1]  C7#9 / Cm9 (Minor Hesitation)
-[-2]  Bb7#9 / Abmaj7#11 (Bearish Push)
-[-3]  Ab7 / Fm9 (Deep Selling)
-[-4]  G7b9 / Dm7b5 (Liquidity Cascade)
-[-5]  Gb7#11 / G7b13 (Capitulation Flush)
-[-6]  G7alt / Cm11 Sub-Bass (The Abyss)
+RIGHT (Bullish / Ascending Pitch)
+  [+6]  Peak High Climax
+  [+5]  High Treble Extension
+  [+4]  Strong Bullish Trend
+  [+3]  Clean Breakout Lift
+  [+2]  Momentum Building
+  [+1]  First Bullish Pop
+  [ 0]  EQUILIBRIUM CENTER (Middle C/D Home Base)
+  [-1]  Initial Pullback Dip
+  [-2]  Selling Traction
+  [-3]  Bearish Trend Developing
+  [-4]  Heavy Selling Pressure
+  [-5]  Liquidity Flush
+  [-6]  Deep Acoustic Bass Floor
+LEFT (Bearish / Descending Pitch)
 ```
 
-### 4. Rhythmic Quantization & Energy Accumulation
-* **Tempo Grid (`RhythmPaceMs`):** Quantizes sound to a human tempo (e.g., $450\text{ ms} \approx 133\text{ BPM}$). High-frequency tick bursts pool together instead of flooding the MIDI bus.
-* **Energy Accumulator:** Trades during the beat window accumulate volume. Heavy blocks trigger sharp guitar pick strikes; low-volume chop plucks softly.
-* **Syncopated Events (`SyncopateMajorEvents`):** Urgent market events (reversals, breakout signals) can strike early on syncopated off-beats.
-* **Chord Dwell (`ChordDwellMs`):** Minimum hold time ($800\text{ ms}$) to prevent chords from jittering across thresholds on fast tick charts.
+---
+
+### 4. Rhythmic Quantization & Energy Accumulator
+* **Tempo Grid (`RhythmPaceMs`):** Clocks sound to a human tempo (default: $450\text{ ms} \approx 133\text{ BPM}$). High-frequency tick bursts pool together instead of flooding the MIDI bus.
+* **Energy Accumulator:** Trades between beats accumulate volume. Heavy blocks strike with loud, punchy velocity; light prints pluck softly.
+* **Syncopated Events (`SyncopateMajorEvents`):** Urgent structural events (reversals, breakout signals) can strike early on syncopated off-beats.
+* **Chord Dwell (`ChordDwellMs`):** Controls the transition rate ($600\text{ ms}$) between stepwise chord stages during market turns.
 
 ---
 
@@ -86,17 +102,19 @@ Selectable directly in the indicator parameters:
 | | `StrongLevel` | `40.0` | Extreme force threshold for momentum lines. |
 | **3. Price Velocity** | `VelLen` | `2` | Price displacement lookback bars. |
 | | `AtrLen` | `7` | ATR normalization period. |
+| | `MoveThresh` | `2.0` | Threshold for price roll vs. absorption. |
 | **4. Audio Engine** | `EnableAudio` | `true` | Toggle MIDI audio on/off. |
-| | `MidiInstrument` | `28` | General MIDI patch (`28` = Clean Electric Guitar, `16` = Organ). |
-| | `ProgressionStyle`| `Hybrid` | `Hybrid`, `Blues`, or `Jazz`. |
-| | `VoicingMode` | `DynamicEventsAndMelody` | Melody runs on small trades; full voiced chords on sweeps/events. |
-| | `RhythmPaceMs` | `450` | Beat interval in milliseconds ($450\text{ ms} \approx 133\text{ BPM}$). |
+| | `MidiInstrument` | `28` | General MIDI patch (`28` = Clean Electric Guitar, `0` = Grand Piano, `16` = Organ). |
+| | `ProgressionStyle`| `Dorian` | `Dorian`, `Diatonic`, `Aeolian`, `Mixolydian`, `BlackKeysPentatonic`, or `QuartalHarmony`. |
+| | `VoicingMode` | `DynamicEventsAndMelody` | Melodic solo runs on routine trades; voiced chords on major sweeps/events. |
+| | `RhythmPaceMs` | `450` | Beat tempo interval in milliseconds ($450\text{ ms} \approx 133\text{ BPM}$). |
 | | `SyncopateMajorEvents` | `true` | Allow urgent breakouts to strike on syncopated off-beats. |
-| | `ChordDwellMs` | `800` | Minimum chord hold time to eliminate threshold jitter. |
+| | `ChordDwellMs` | `600` | Stepwise transition speed per chord during market turnarounds. |
 | | `BaseVelocity` | `80` | Base MIDI strike loudness ($0\text{–}127$). |
+| | `MinVolumeFilter` | `1` | Ignore trade executions below this volume threshold. |
 
 ---
 
 ## 📄 License
 
-GNU General Public License V3. See `LICENSE` for more information.
+GNU General Public License v3.0 (GPL-3.0). See `LICENSE` for more information.
