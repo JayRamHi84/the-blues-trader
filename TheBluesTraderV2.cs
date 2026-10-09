@@ -1,3 +1,13 @@
+// TheBluesTraderV2
+// JayRamHi84
+// Licensed under the terms of the project LICENSE file.
+
+// ⚠️ Risk & Financial Disclaimer
+//This software is for educational, research, and entertainment purposes only. 
+//It does not constitute financial, investment, or trading advice. 
+//Futures, options, and equities trading involve substantial risk of loss and are not suitable for every investor. 
+//The author assumes no responsibility or liability for any financial losses incurred from using this indicator.
+
 #region Using declarations
 using System;
 using System.ComponentModel;
